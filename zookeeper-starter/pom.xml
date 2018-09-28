@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>zookeeper-learn</artifactId>
-        <groupId>com.cheng</groupId>
+        <groupId>com.cheng.zookeeper</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -12,18 +12,33 @@
     <artifactId>zookeeper-starter</artifactId>
 
     <dependencies>
-        <!-- 定义 API 边界的注释和管理 javadocs 的工具 -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.7.0.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.4.6</version>
+        </dependency>
+
+        <!-- 定义 API 边界的注释和管理 java docs 的工具 -->
         <dependency>
             <groupId>org.apache.yetus</groupId>
             <artifactId>audience-annotations</artifactId>
             <version>0.5.0</version>
         </dependency>
 
-
+        <!-- 处理控制台输入的Java类库 -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <groupId>jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>0.9.94</version>
         </dependency>
+
     </dependencies>
+
+
 </project>
