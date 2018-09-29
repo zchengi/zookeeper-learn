@@ -1,4 +1,4 @@
-package com.cheng.zk;
+package com.cheng.zk.demo;
 
 import static org.apache.zookeeper.AsyncCallback.StringCallback;
 

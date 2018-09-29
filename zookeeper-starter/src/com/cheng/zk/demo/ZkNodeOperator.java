@@ -1,4 +1,4 @@
-package com.cheng.zk;
+package com.cheng.zk.demo;
 
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
