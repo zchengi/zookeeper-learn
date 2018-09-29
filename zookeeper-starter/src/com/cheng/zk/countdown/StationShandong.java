@@ -1,0 +1,27 @@
+package com.cheng.zk.countdown;
+
+import java.util.concurrent.CountDownLatch;
+
+/**
+ * @author cheng
+ *         2018/9/29 12:59
+ */
+public class StationShandong extends AbstractDangerCenter {
+
+    public StationShandong(CountDownLatch countDown) {
+        super(countDown, "山东调度站");
+    }
+
+    @Override
+    public void check() {
+        System.out.println("正在检查 [" + this.getStation() + "]...");
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("检查 [" + this.getStation() + "] 完毕，可以发车");
+    }
+}
