@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>zookeeper-starter</module>
+        <module>curator-framework</module>
     </modules>
 
     <packaging>pom</packaging>
