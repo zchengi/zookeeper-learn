@@ -1,0 +1,4 @@
+{"type":"add","url":"ftp://193.112.56.145/config/redis.xml","remark":"add"}
+
+{"type":"update","url":"ftp://193.112.56.145/config/redis.xml","remark":"update"}
+{"type":"delete","url":"","remark":"delete"}

@@ -3,14 +3,21 @@ package com.cheng.curator;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.retry.RetryNTimes;
-import org.apache.zookeeper.data.Stat;
+
+import java.util.List;
 
 /**
  * 7-2 建立 curator 与 zkServer 的连接
  * 7-3 zk命名空间以及创建节点
  * 7-4 zk修改节点以及删除节点
  * 7-5 zk查询节点相关信息
+ * 7-6 curator 之 usingWatcher
+ * 7-7 curator 之 nodeCache 一次注册N次监听
+ * 7-8 curator 之 PathChildrenCache 子节点监听
  *
  * @author cheng
  *         2018/10/1 17:20
@@ -19,6 +26,8 @@ public class CuratorOperator {
 
     public CuratorFramework client;
     private static final String ZK_SERVER_PATH = "193.112.56.145:2181";
+
+    public static final String ADD_PATH = "/super/cheng/d";
 
     /**
      * 实例化zk客户端
@@ -119,11 +128,70 @@ public class CuratorOperator {
 //        }
 
         // 判断节点是否存在，如果不存在则为空
-        Stat statExist = curator.client.checkExists().forPath(nodePath);
-        System.out.println(statExist);
+//        Stat statExist = curator.client.checkExists().forPath(nodePath);
+//        System.out.println(statExist);
 
 
-        Thread.sleep(3000);
+        // watcher 事件，当使用 usingWatcher 的时候，监听只会触发一次，监听完毕后就销毁
+//        curator.client.getData().usingWatcher(new MyCuratorWatcher()).forPath(nodePath);
+//        curator.client.getData().usingWatcher(new MyWatcher()).forPath(nodePath);
+
+        // 为节点添加 watcher
+        // NodeCache：监听数据节点的变更，会触发事件
+//        final NodeCache nodeCache = new NodeCache(curator.client, nodePath);
+        // buildInitial: 初始化的时候获取 node 的值并且缓存
+//        nodeCache.start(true);
+//        if (nodeCache.getCurrentData() != null) {
+//            System.out.println("节点初始化数据为: " + new String(nodeCache.getCurrentData().getData()));
+//        } else {
+//            System.out.println("节点初始化数据为空...");
+//        }
+//        nodeCache.getListenable().addListener(() -> {
+//            String data = new String(nodeCache.getCurrentData().getData());
+//            System.out.println("节点路径: " + nodeCache.getCurrentData().getPath() + " 数据: " + data);
+//        });
+
+        // 为子节点添加 watcher
+        // PathChildrentCache：监听数据节点的增删改，会触发事件
+        String childNodePathCache = nodePath;
+        // cacheData：设置缓存节点的数据状态
+        final PathChildrenCache childrenCache = new PathChildrenCache(curator.client, childNodePathCache, true);
+
+        /*
+         * StartMode：初始化方式
+         * POST_INITIALIZED_EVENT：异步初始化，初始化之后会触发事件
+         * NORMAL：异步初始化
+         * BUILD_INITIAL_CACHE：同步初始化
+         */
+        childrenCache.start(PathChildrenCache.StartMode.NORMAL);
+
+        List<ChildData> childDataList = childrenCache.getCurrentData();
+        System.out.println("当前数据节点的子节点数据列表: ");
+        for (ChildData childData : childDataList) {
+            System.out.println(new String(childData.getData()));
+        }
+
+        childrenCache.getListenable().addListener(((client1, event) -> {
+            if (event.getType().equals(PathChildrenCacheEvent.Type.INITIALIZED)) {
+                System.out.println("子节点初始化ok...");
+            } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_ADDED)) {
+                String path = event.getData().getPath();
+                if (ADD_PATH.equals(path)) {
+                    System.out.println("添加子节点: " + event.getData().getPath());
+                    System.out.println("子节点数据: " + new String(event.getData().getData()));
+                } else if ("/super/cheng/1".equals(path)) {
+                    System.out.println("添加不正确...");
+                }
+            } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_UPDATED)) {
+                System.out.println("修改子节点: " + event.getData().getPath());
+                System.out.println("修改子节点数据: " + new String(event.getData().getData()));
+            } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_REMOVED)) {
+                System.out.println("删除子节点: " + event.getData().getPath());
+            }
+        }));
+
+
+        Thread.sleep(10000000);
 
         curator.closeZkClient();
         System.out.println("当前客户端的状态: " + curator.client.getState());
