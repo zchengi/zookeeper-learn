@@ -14,7 +14,7 @@
     <dubbo:registry protocol="zookeeper" address="193.112.56.145:2181"/>
 
     <!-- 定义暴露服务的端口号 -->
-    <dubbo:protocol name="dubbo" prompt="20880"/>
+    <dubbo:protocol name="dubbo" port="20880"/>
 
     <!-- 暴露具体的服务接口 -->
     <dubbo:service retries="3" interface="com.cheng.item.service.ItemsService" ref="itemsService"/>
