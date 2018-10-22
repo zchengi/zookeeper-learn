@@ -15,6 +15,8 @@
         <module>cheng-dubbo-common</module>
         <module>cheng-dubbo-item-api</module>
         <module>cheng-dubbo-item-service</module>
+        <module>cheng-dubbo-order-api</module>
+        <module>cheng-dubbo-order-service</module>
     </modules>
 
     <!-- 集中定义依赖版本号 -->
