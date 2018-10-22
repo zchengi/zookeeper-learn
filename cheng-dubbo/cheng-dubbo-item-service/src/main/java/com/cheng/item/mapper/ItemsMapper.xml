@@ -178,4 +178,8 @@
             counts = #{counts,jdbcType=INTEGER}
         where id = #{id,jdbcType=VARCHAR}
     </update>
+
+    <update id="reduceCounts" parameterType="com.cheng.item.pojo.Items" >
+        update items set counts=counts-#{buyCounts} where id=#{id}
+    </update>
 </mapper>
