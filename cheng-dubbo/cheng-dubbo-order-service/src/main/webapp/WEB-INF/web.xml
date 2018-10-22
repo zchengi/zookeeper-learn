@@ -5,7 +5,7 @@
          http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-    <display-name>com-dubbo-item-service</display-name>
+    <display-name>com-dubbo-order-service</display-name>
 
     <!-- 加载 spring 容器 -->
     <context-param>
