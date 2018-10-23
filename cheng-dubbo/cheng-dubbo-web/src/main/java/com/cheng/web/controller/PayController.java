@@ -2,7 +2,6 @@ package com.cheng.web.controller;
 
 import com.cheng.common.utils.JsonResult;
 import com.cheng.web.service.CustomerService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,14 +26,20 @@ public class PayController {
 
     @GetMapping("/buy")
     @ResponseBody
+    public JsonResult buy(String itemId) {
+        boolean result = customerService.displayBuy(itemId);
+        return JsonResult.ok(result ? "订单创建成功...":"订单创建失败...");
+    }
+
+    /**
+     * 模拟集群环境下的数据不一致
+     * @param itemId
+     * @return
+     */
+    @GetMapping("/buy2")
+    @ResponseBody
     public JsonResult doGetLogin(String itemId) {
-
-        if (StringUtils.isNoneBlank(itemId)) {
-            customerService.displayBuy(itemId);
-        } else {
-            return JsonResult.errorMsg("商品id不能为空");
-        }
-
-        return JsonResult.ok();
+        boolean result = customerService.displayBuy(itemId);
+        return JsonResult.ok(result ? "订单创建成功...":"订单创建失败...");
     }
 }

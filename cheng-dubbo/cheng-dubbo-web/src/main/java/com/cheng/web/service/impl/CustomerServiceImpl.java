@@ -35,8 +35,8 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Override
 	public boolean displayBuy(String itemId) {
-		
-		int buyCounts = 5;
+
+        int buyCounts = 6;
 		
 		// 1. 判断库存
 		int stockCounts = itemService.getItemCounts(itemId);
@@ -45,8 +45,15 @@ public class CustomerServiceImpl implements CustomerService {
 					stockCounts, buyCounts);
 			return false;
 		}
-		
-		// 2. 创建订单
+
+        // 模拟业务需要3秒
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // 2. 创建订单
 		boolean isOrderCreated = ordersService.createOrder(itemId);
 		
 		// 3. 创建订单成功后，扣除库存
