@@ -18,4 +18,7 @@
 
     <!-- 暴露具体的服务接口 -->
     <dubbo:service retries="3" interface="com.cheng.order.service.OrdersService" ref="ordersService"/>
+
+    <!-- 监控服务的注册 -->
+    <dubbo:monitor protocol="registry"/>
 </beans>

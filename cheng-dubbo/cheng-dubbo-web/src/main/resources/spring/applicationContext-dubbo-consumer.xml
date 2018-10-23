@@ -17,4 +17,6 @@
     <dubbo:reference id="ordersService" interface="com.cheng.order.service.OrdersService"
                      retries="3" check="false" init="true"/>
 
+    <!-- 监控服务的注册 -->
+    <dubbo:monitor protocol="registry"/>
 </beans>
