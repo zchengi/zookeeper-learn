@@ -19,7 +19,7 @@ public class CustomerServiceImpl implements CustomerService {
 	private final static Logger log = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
 	@Autowired
-	private ItemsService itemService;
+	private ItemsService itemsService;
 
 	@Autowired
 	private OrdersService ordersService;
@@ -27,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void doBuyItem(String itemId) {
 		// 减少库存
-		itemService.displayReduceCounts(itemId, 1);
+		itemsService.displayReduceCounts(itemId, 1);
 		
 		// 创建订单
 		ordersService.createOrder(itemId);
@@ -39,7 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
         int buyCounts = 6;
 		
 		// 1. 判断库存
-		int stockCounts = itemService.getItemCounts(itemId);
+		int stockCounts = itemsService.getItemCounts(itemId);
 		if (stockCounts < buyCounts) {
 			log.info("库存剩余{}件，用户需求量{}件，库存不足，订单创建失败...", 
 					stockCounts, buyCounts);
@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
 		// 3. 创建订单成功后，扣除库存
 		if (isOrderCreated) {
 			log.info("订单创建成功...");
-			itemService.displayReduceCounts(itemId, buyCounts);
+			itemsService.displayReduceCounts(itemId, buyCounts);
 		} else {
 			log.info("订单创建失败...");
 			return false;

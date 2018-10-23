@@ -1,10 +1,15 @@
 package com.cheng.order.pojo;
 
+import java.io.Serializable;
+
 /**
  * @author cheng
  *         2018/10/3 12:41
  */
-public class Orders {
+public class Orders implements Serializable {
+
+    private static final long serialVersionUID = 6642958741804500474L;
+
     private String id;
 
     private String orderNum;

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+    <!-- zookeeper 与 spring容器结合，启动项目加载时建立与zk的连接 -->
+
+    <!-- zookeeper 重试策略 -->
+    <bean id="retryPolicy" class="org.apache.curator.retry.RetryNTimes">
+        <!-- 重试次数 -->
+        <constructor-arg index="0" value="10"/>
+        <!-- 每次间隔 -->
+        <constructor-arg index="1" value="5000"/>
+    </bean>
+
+    <!-- zookeeper 客户端 -->
+    <bean id="client" class="org.apache.curator.framework.CuratorFrameworkFactory"
+          factory-method="newClient" init-method="start">
+        <!-- zk服务地址，集群用","分隔 -->
+        <constructor-arg index="0" value="193.112.56.145:2181"/>
+        <!-- session timeout 会话超时时间 -->
+        <constructor-arg index="1" value="10000"/>
+        <!-- connectionTimeoutMs 创建连接超时时间 -->
+        <constructor-arg index="2" value="5000"/>
+        <!-- 重试策略 -->
+        <constructor-arg index="3" ref="retryPolicy"/>
+    </bean>
+
+    <!-- 注入zk客户端 -->
+    <bean id="zkCurator" class="com.cheng.curator.utils.ZkCurator" init-method="init">
+        <constructor-arg index="0" ref="client"/>
+    </bean>
+</beans>
