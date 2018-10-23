@@ -30,4 +30,9 @@
     <bean id="zkCurator" class="com.cheng.curator.utils.ZkCurator" init-method="init">
         <constructor-arg index="0" ref="client"/>
     </bean>
+
+    <!-- 注入分布式锁 -->
+    <bean id="distributedLock" class="com.cheng.curator.utils.DistributedLock" init-method="init">
+        <constructor-arg index="0" ref="client"/>
+    </bean>
 </beans>

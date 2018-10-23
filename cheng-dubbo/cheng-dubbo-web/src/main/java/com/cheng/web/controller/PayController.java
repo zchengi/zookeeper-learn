@@ -42,6 +42,13 @@ public class PayController {
         return JsonResult.ok(itemsService.getItem(id));
     }
 
+    @RequestMapping("/order")
+    @ResponseBody
+    public JsonResult getOrderById(String id) {
+        return JsonResult.ok(ordersService.getOrder(id));
+    }
+
+
     @GetMapping("/buy")
     @ResponseBody
     public JsonResult buy(String itemId) {

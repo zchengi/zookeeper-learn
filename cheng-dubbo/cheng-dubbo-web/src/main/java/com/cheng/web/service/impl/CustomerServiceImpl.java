@@ -1,6 +1,7 @@
 package com.cheng.web.service.impl;
 
 
+import com.cheng.curator.utils.DistributedLock;
 import com.cheng.item.service.ItemsService;
 import com.cheng.order.service.OrdersService;
 import com.cheng.web.service.CustomerService;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author cheng
@@ -24,6 +26,9 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private OrdersService ordersService;
 
+    @Autowired
+    private DistributedLock distributedLock;
+
 	@Override
 	public void doBuyItem(String itemId) {
 		// 减少库存
@@ -34,7 +39,11 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 	
 	@Override
+    @Transactional(rollbackFor = Exception.class)
 	public boolean displayBuy(String itemId) {
+
+        // 执行订单流程之前使得当前业务获得分布式锁
+        distributedLock.getLock();
 
         int buyCounts = 6;
 		
@@ -43,6 +52,8 @@ public class CustomerServiceImpl implements CustomerService {
 		if (stockCounts < buyCounts) {
 			log.info("库存剩余{}件，用户需求量{}件，库存不足，订单创建失败...", 
 					stockCounts, buyCounts);
+            // 释放锁，让下一个请求获得锁
+            distributedLock.releaseLock();
 			return false;
 		}
 
@@ -51,6 +62,8 @@ public class CustomerServiceImpl implements CustomerService {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            // 释放锁，让下一个请求获得锁
+            distributedLock.releaseLock();
         }
 
         // 2. 创建订单
@@ -62,8 +75,13 @@ public class CustomerServiceImpl implements CustomerService {
 			itemsService.displayReduceCounts(itemId, buyCounts);
 		} else {
 			log.info("订单创建失败...");
+            // 释放锁，让下一个请求获得锁
+            distributedLock.releaseLock();
 			return false;
 		}
+
+        // 释放锁，让下一个请求获得锁
+        distributedLock.releaseLock();
 		
 		return true;
 	}
